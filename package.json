@@ -6,16 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && node supabase/functions/serve-site/copy-static.js && npx supabase functions deploy serve-site",
+    "copy-static": "node supabase/functions/serve-site/copy-static.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.56.1",
+    "@supabase/supabase-js": "^2.57.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "supabase": "^2.39.2",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
