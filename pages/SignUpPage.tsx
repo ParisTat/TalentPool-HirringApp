@@ -20,7 +20,7 @@ const SignUpPage: React.FC = () => {
     const { error } = await signUp(email, password, name, role);
 
     if (error) {
-      setError(error.message);
+      setError(error);
     } else {
       navigate('/login', { state: { message: 'Please check your email to confirm your account.' } });
     }
