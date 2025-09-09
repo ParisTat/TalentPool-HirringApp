@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 const ContactPage: React.FC = () => {
@@ -16,21 +15,21 @@ const ContactPage: React.FC = () => {
 
   if (submitted) {
     return (
-        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm text-center">
-            <h1 className="text-3xl font-bold text-secondary mb-4">Thank You!</h1>
-            <p className="text-slate-600">Your message has been sent. We'll get back to you shortly.</p>
+        <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-sm text-center">
+            <h1 className="text-3xl font-bold text-secondary dark:text-slate-100 mb-4">Thank You!</h1>
+            <p className="text-slate-600 dark:text-slate-400">Your message has been sent. We'll get back to you shortly.</p>
         </div>
     )
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm">
-      <h1 className="text-3xl font-bold text-secondary mb-2">Contact Us</h1>
-      <p className="text-slate-600 mb-6">Have a question or feedback? We'd love to hear from you.</p>
+    <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-sm">
+      <h1 className="text-3xl font-bold text-secondary dark:text-slate-100 mb-2">Contact Us</h1>
+      <p className="text-slate-600 dark:text-slate-400 mb-6">Have a question or feedback? We'd love to hear from you.</p>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
             Full Name
           </label>
           <input
@@ -39,11 +38,11 @@ const ContactPage: React.FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
             Email Address
           </label>
           <input
@@ -52,11 +51,11 @@ const ContactPage: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
         </div>
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="message" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
             Message
           </label>
           <textarea
@@ -65,7 +64,7 @@ const ContactPage: React.FC = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           ></textarea>
         </div>
         <div>

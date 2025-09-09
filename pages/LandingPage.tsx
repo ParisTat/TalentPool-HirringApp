@@ -1,20 +1,26 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { jobs } from '../data/mockData';
 import JobCard from '../components/JobCard';
+import { useJobs } from '../hooks/useJobs';
 
 const LandingPage: React.FC = () => {
-  const featuredJobs = jobs.slice(0, 3);
+  const { jobs, isLoading } = useJobs();
+  const [featuredJobs, setFeaturedJobs] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (jobs.length > 0) {
+      setFeaturedJobs(jobs.slice(0, 3));
+    }
+  }, [jobs]);
 
   return (
     <div>
       {/* Hero Section */}
-      <section className="text-center bg-white py-20 rounded-lg shadow-sm">
-        <h1 className="text-5xl font-extrabold text-secondary tracking-tight">
+      <section className="text-center bg-white dark:bg-slate-800 py-20 rounded-lg shadow-sm">
+        <h1 className="text-5xl font-extrabold text-secondary dark:text-slate-100 tracking-tight">
           Find Your Next Opportunity
         </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-slate-600">
+        <p className="mt-4 max-w-2xl mx-auto text-xl text-slate-600 dark:text-slate-400">
           TalentPool connects talented professionals with innovative companies. Discover your dream job today.
         </p>
         <div className="mt-8 flex justify-center gap-4">
@@ -25,8 +31,8 @@ const LandingPage: React.FC = () => {
             Browse Jobs
           </Link>
           <Link
-            to="#"
-            className="px-8 py-3 text-lg font-medium text-primary-dark bg-cyan-100 rounded-md hover:bg-cyan-200 transition-transform hover:scale-105"
+            to="/login"
+            className="px-8 py-3 text-lg font-medium text-primary-dark dark:text-primary-light bg-cyan-100 dark:bg-cyan-900/20 rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/30 transition-transform hover:scale-105"
           >
             Sign In
           </Link>
@@ -35,20 +41,38 @@ const LandingPage: React.FC = () => {
 
       {/* Featured Jobs Section */}
       <section className="mt-16">
-        <h2 className="text-3xl font-bold text-center text-secondary mb-8">Featured Jobs</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredJobs.map(job => (
-            <JobCard key={job.id} job={job} />
-          ))}
-        </div>
-        <div className="text-center mt-8">
-            <Link
+        <h2 className="text-3xl font-bold text-center text-secondary dark:text-slate-100 mb-8">Featured Jobs</h2>
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="text-slate-600 dark:text-slate-400">Loading featured jobs...</div>
+          </div>
+        ) : featuredJobs.length > 0 ? (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredJobs.map(job => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Link
                 to="/jobs"
                 className="text-primary hover:text-primary-dark font-medium transition-colors"
-            >
+              >
                 View all jobs &rarr;
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-slate-500 dark:text-slate-400 mb-4">No jobs available at the moment.</p>
+            <Link
+              to="/jobs"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+            >
+              Browse All Jobs
             </Link>
-        </div>
+          </div>
+        )}
       </section>
     </div>
   );

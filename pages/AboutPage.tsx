@@ -3,9 +3,9 @@ import React from 'react';
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-sm">
-      <h1 className="text-4xl font-extrabold text-secondary mb-6">About TalentPool</h1>
-      <div className="space-y-4 text-slate-600 leading-relaxed">
+    <div className="max-w-3xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-sm">
+      <h1 className="text-4xl font-extrabold text-secondary dark:text-slate-100 mb-6">About TalentPool</h1>
+      <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
         <p>
           TalentPool was founded with a simple mission: to bridge the gap between talented professionals and the world's most innovative companies. We believe that finding the right job shouldn't be a chore, but an exciting journey towards professional growth and fulfillment.
         </p>
