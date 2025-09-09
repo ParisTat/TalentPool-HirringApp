@@ -1,16 +1,88 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { jobs } from '../data/mockData';
+import { useJobs } from '../hooks/useJobs';
+import { useAuth } from '../auth/AuthContext';
+import { useApplications } from '../hooks/useApplications';
 
 const JobDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const job = jobs.find(j => j.id === id);
+  const { getJobById } = useJobs();
+  const { profile } = useAuth();
+  const { applyToJob, checkIfApplied } = useApplications();
+  const [job, setJob] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      if (!id) return;
+      
+      setIsLoading(true);
+      try {
+        const jobData = await getJobById(id);
+        setJob(jobData);
+      } catch (error) {
+        console.error('Error fetching job:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJob();
+  }, [id, getJobById]);
+
+  useEffect(() => {
+    const checkApplicationStatus = async () => {
+      if (job && profile?.role === 'candidate') {
+        setIsChecking(true);
+        try {
+          const applied = await checkIfApplied(job.id);
+          setHasApplied(applied);
+        } catch (error) {
+          console.error('Error checking application status:', error);
+        } finally {
+          setIsChecking(false);
+        }
+      } else {
+        setIsChecking(false);
+      }
+    };
+
+    checkApplicationStatus();
+  }, [job, profile, checkIfApplied]);
+
+  const handleApply = async () => {
+    if (!profile || profile.role !== 'candidate' || !job) {
+      return;
+    }
+
+    setIsApplying(true);
+    try {
+      await applyToJob(job.id);
+      setHasApplied(true);
+    } catch (error) {
+      console.error('Error applying to job:', error);
+      alert('Failed to apply to job. Please try again.');
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-slate-600 dark:text-slate-400">Loading job details...</div>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-red-600">Job not found</h2>
+        <h2 className="text-2xl font-bold text-red-600 dark:text-red-400">Job not found</h2>
         <Link to="/jobs" className="text-primary hover:underline mt-4 inline-block">
           &larr; Back to all jobs
         </Link>
@@ -20,49 +92,60 @@ const JobDetailsPage: React.FC = () => {
 
   const Section: React.FC<{title: string, children: React.ReactNode}> = ({title, children}) => (
     <div className="mt-8">
-        <h3 className="text-xl font-bold text-secondary mb-3">{title}</h3>
+        <h3 className="text-xl font-bold text-secondary dark:text-slate-100 mb-3">{title}</h3>
         {children}
     </div>
   );
 
-
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 mb-6">
+    <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
             <div>
-                <h1 className="text-4xl font-extrabold text-secondary">{job.title}</h1>
-                <p className="text-lg text-slate-600 mt-2">{job.company} &bull; {job.location}</p>
+                <h1 className="text-4xl font-extrabold text-secondary dark:text-slate-100">{job.title}</h1>
+                <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">{job.company} &bull; {job.location}</p>
             </div>
             <div className="mt-4 md:mt-0">
-                <button className="px-8 py-3 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors w-full md:w-auto">
-                    Apply Now
-                </button>
+                {profile?.role === 'candidate' && !isChecking && (
+                  hasApplied ? (
+                    <span className="px-8 py-3 text-lg font-medium text-green-600 bg-green-50 dark:bg-green-900/20 rounded-md w-full md:w-auto inline-block text-center">
+                      Applied
+                    </span>
+                  ) : (
+                    <button 
+                      onClick={handleApply}
+                      disabled={isApplying}
+                      className="px-8 py-3 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors w-full md:w-auto disabled:opacity-50"
+                    >
+                      {isApplying ? 'Applying...' : 'Apply Now'}
+                    </button>
+                  )
+                )}
             </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-8">
             <div>
-                <p className="text-sm text-slate-500">Salary</p>
-                <p className="font-semibold text-secondary">{job.salary}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Salary</p>
+                <p className="font-semibold text-secondary dark:text-slate-100">{job.salary}</p>
             </div>
             <div>
-                <p className="text-sm text-slate-500">Job Type</p>
-                <p className="font-semibold text-secondary">{job.type}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Job Type</p>
+                <p className="font-semibold text-secondary dark:text-slate-100">{job.type}</p>
             </div>
         </div>
       
       <Section title="Job Description">
-        <p className="text-slate-600 leading-relaxed">{job.description}</p>
+        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{job.description}</p>
       </Section>
 
       <Section title="Responsibilities">
-        <ul className="list-disc list-inside space-y-2 text-slate-600">
+        <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400">
           {job.responsibilities.map((item, index) => <li key={index}>{item}</li>)}
         </ul>
       </Section>
 
       <Section title="Qualifications">
-        <ul className="list-disc list-inside space-y-2 text-slate-600">
+        <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400">
           {job.qualifications.map((item, index) => <li key={index}>{item}</li>)}
         </ul>
       </Section>

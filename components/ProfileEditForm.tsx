@@ -57,77 +57,77 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded">
           {error}
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
             required
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
           <input
             type="email"
             value={profile.email}
             disabled
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50 text-gray-500"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Location</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Location</label>
           <input
             type="text"
             name="location"
             value={formData.location}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
           />
         </div>
 
         {profile.role === 'candidate' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700">LinkedIn</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">LinkedIn</label>
               <input
                 type="url"
                 name="linkedin"
                 value={formData.linkedin}
                 onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">GitHub</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">GitHub</label>
               <input
                 type="url"
                 name="github"
                 value={formData.github}
                 onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
           </>
@@ -136,24 +136,24 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onCancel }) => {
         {profile.role === 'recruiter' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Company</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Company</label>
               <input
                 type="text"
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Position</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Position</label>
               <input
                 type="text"
                 name="position"
                 value={formData.position}
                 onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
           </>
@@ -161,13 +161,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onCancel }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Professional Headline</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Professional Headline</label>
         <input
           type="text"
           name="headline"
           value={formData.headline}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+          className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
           placeholder={profile.role === 'candidate' ? 'e.g., Senior Frontend Developer' : 'e.g., Senior Recruiter'}
         />
       </div>
@@ -175,37 +175,37 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onCancel }) => {
       {profile.role === 'candidate' && (
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Skills (comma-separated)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Skills (comma-separated)</label>
             <input
               type="text"
               name="skills"
               value={formData.skills}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+              className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="JavaScript, React, TypeScript, Node.js"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Experience</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Experience</label>
             <textarea
               name="experience"
               value={formData.experience}
               onChange={handleChange}
               rows={4}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+              className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Describe your work experience..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Education</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Education</label>
             <textarea
               name="education"
               value={formData.education}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary focus:border-primary"
+              className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Your educational background..."
             />
           </div>
@@ -216,7 +216,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
         >
           Cancel
         </button>
