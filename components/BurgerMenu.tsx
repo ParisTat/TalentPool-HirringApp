@@ -23,11 +23,7 @@ const BurgerMenu: React.FC = () => {
       to={to}
       onClick={onClick}
       className={({ isActive }) =>
-        `block px-3 py-2 text-base font-medium transition-colors ${
-          isActive 
-            ? 'text-primary bg-primary/10' 
-            : 'text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-primary/5'
-        }`
+        `mobile-nav-item ${isActive ? 'mobile-nav-item--active' : 'mobile-nav-item--inactive'}`
       }
     >
       {children}
@@ -67,35 +63,33 @@ const BurgerMenu: React.FC = () => {
         </svg>
       </button>
 
-      {/* Mobile Menu Overlay */}
+      {/* Full Screen Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={closeMenu}
-          />
-          
-          {/* Menu Panel */}
-          <div className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-slate-800 shadow-xl">
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="fixed inset-0 z-50 md:hidden h-screen">
+          {/* Full Screen Menu with proper background */}
+          <div className="fixed inset-0 h-screen mobile-menu-bg">
+            <div className="flex flex-col h-screen">
+              {/* Header with Logo and Close Button */}
+              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80">
+                {/* TalentPool Logo */}
                 <Link 
                   to="/" 
                   onClick={closeMenu}
-                  className="text-xl font-bold text-primary-dark dark:text-primary-light"
+                  className="text-2xl font-bold text-primary-dark dark:text-primary-light"
                 >
                   TalentPool
                 </Link>
-                <div className="flex items-center space-x-2">
+                
+                {/* Theme Toggle and Close Button */}
+                <div className="flex items-center space-x-4">
                   <ThemeToggle />
                   <button
                     onClick={closeMenu}
                     className="p-2 rounded-md text-slate-600 dark:text-slate-300 hover:text-primary hover:bg-primary/5 transition-colors"
+                    aria-label="Close menu"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-6 h-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -111,8 +105,8 @@ const BurgerMenu: React.FC = () => {
                 </div>
               </div>
 
-              {/* Navigation Links */}
-              <nav className="flex-1 px-4 py-6 space-y-2">
+              {/* Navigation Links - Stretched to fill space */}
+              <nav className="flex-1 flex flex-col justify-center items-center space-y-8 py-12">
                 <NavLinkItem to="/jobs" onClick={closeMenu}>
                   Browse Jobs
                 </NavLinkItem>
@@ -138,33 +132,38 @@ const BurgerMenu: React.FC = () => {
                 </NavLinkItem>
               </nav>
 
-              {/* User Section */}
-              <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+              {/* User Section - Pushed to bottom */}
+              <div className="p-6 border-t border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80">
                 {user ? (
                   <div className="space-y-4">
-                    <div className="text-sm text-slate-600 dark:text-slate-300">
-                      Welcome, <span className="font-medium">{profile?.name}</span>
+                    <div className="text-center">
+                      <div className="text-lg font-medium text-slate-700 dark:text-slate-300 mb-1">
+                        Welcome back!
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {profile?.name}
+                      </div>
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+                      className="w-full px-6 py-3 text-base font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
                     >
                       Sign Out
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Link
                       to="/login"
                       onClick={closeMenu}
-                      className="block w-full px-4 py-2 text-sm font-medium text-center text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
+                      className="block w-full px-6 py-3 text-base font-medium text-center text-primary border-2 border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
                     >
                       Sign In
                     </Link>
                     <Link
                       to="/signup"
                       onClick={closeMenu}
-                      className="block w-full px-4 py-2 text-sm font-medium text-center text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+                      className="block w-full px-6 py-3 text-base font-medium text-center text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
                     >
                       Sign Up
                     </Link>
