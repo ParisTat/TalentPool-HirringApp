@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Job } from '../types';
 import { useAuth } from '../auth/AuthContext';
@@ -29,27 +29,29 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const { applyToJob, checkIfApplied } = useApplications();
   const [hasApplied, setHasApplied] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
 
+  // Check application status only once when component mounts and profile is available
   useEffect(() => {
-    const checkApplicationStatus = async () => {
-      if (profile?.role === 'candidate') {
-        setIsChecking(true);
-        try {
-          const applied = await checkIfApplied(job.id);
-          setHasApplied(applied);
-        } catch (error) {
-          console.error('Error checking application status:', error);
-        } finally {
-          setIsChecking(false);
-        }
-      } else {
+    const checkStatus = async () => {
+      if (!profile || profile.role !== 'candidate') {
+        setIsChecking(false);
+        return;
+      }
+
+      setIsChecking(true);
+      try {
+        const applied = await checkIfApplied(job.id);
+        setHasApplied(applied);
+      } catch (error) {
+        console.error('Error checking application status:', error);
+      } finally {
         setIsChecking(false);
       }
     };
 
-    checkApplicationStatus();
-  }, [job.id, profile, checkIfApplied]);
+    checkStatus();
+  }, [job.id, profile?.id, profile?.role]); // Remove checkIfApplied to prevent infinite loops
 
   const handleApply = async () => {
     if (!profile || profile.role !== 'candidate') {
@@ -60,9 +62,12 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     try {
       await applyToJob(job.id);
       setHasApplied(true);
+      // Show success message
+      alert('Application submitted successfully!');
     } catch (error) {
       console.error('Error applying to job:', error);
-      alert('Failed to apply to job. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to apply to job. Please try again.';
+      alert(errorMessage);
     } finally {
       setIsApplying(false);
     }
@@ -99,8 +104,12 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             >
               View Details
             </Link>
-            {profile?.role === 'candidate' && !isChecking && (
-              hasApplied ? (
+            {profile?.role === 'candidate' && (
+              isChecking ? (
+                <div className="px-4 py-2 text-sm font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 rounded-md min-w-[80px] text-center">
+                  ...
+                </div>
+              ) : hasApplied ? (
                 <span className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 dark:bg-green-900/20 rounded-md">
                   Applied
                 </span>

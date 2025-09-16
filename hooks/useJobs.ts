@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabase';
 import { Job } from '../types';
 import { useAuth } from '../auth/AuthContext';
@@ -9,7 +9,7 @@ export const useJobs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -30,7 +30,7 @@ export const useJobs = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const fetchRecruiterJobs = async () => {
     if (!user) return;
@@ -77,7 +77,8 @@ export const useJobs = () => {
         throw createError;
       }
 
-      setJobs(prev => [data, ...prev]);
+      // Refresh the jobs list to ensure consistency
+      await fetchJobs();
       return data;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create job';
@@ -140,7 +141,7 @@ export const useJobs = () => {
     }
   };
 
-  const getJobById = async (jobId: string): Promise<Job | null> => {
+  const getJobById = useCallback(async (jobId: string): Promise<Job | null> => {
     try {
       const { data, error } = await supabase
         .from('jobs')
@@ -157,11 +158,11 @@ export const useJobs = () => {
       console.error('Error fetching job:', err);
       return null;
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [fetchJobs]);
 
   return {
     jobs,
@@ -173,5 +174,6 @@ export const useJobs = () => {
     updateJob,
     deleteJob,
     getJobById,
+    refreshJobs: fetchJobs, // Alias for manual refresh
   };
 };

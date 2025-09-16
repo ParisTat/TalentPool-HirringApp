@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabase';
 import { useAuth } from '../auth/AuthContext';
 
@@ -35,7 +35,7 @@ export const useApplications = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchApplicationsForRecruiter = async () => {
+  const fetchApplicationsForRecruiter = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -83,9 +83,9 @@ export const useApplications = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
-  const fetchApplicationsForCandidate = async () => {
+  const fetchApplicationsForCandidate = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -112,7 +112,7 @@ export const useApplications = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   const applyToJob = async (jobId: string) => {
     if (!user) {
@@ -120,6 +120,18 @@ export const useApplications = () => {
     }
 
     try {
+      // First check if already applied to prevent duplicates
+      const { data: existingApplication } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('job_id', jobId)
+        .eq('candidate_id', user.id)
+        .maybeSingle();
+
+      if (existingApplication) {
+        throw new Error('You have already applied to this job');
+      }
+
       const { data, error } = await supabase
         .from('applications')
         .insert([{
@@ -131,6 +143,10 @@ export const useApplications = () => {
         .single();
 
       if (error) {
+        // Handle specific database errors
+        if (error.code === '23505') { // Unique constraint violation
+          throw new Error('You have already applied to this job');
+        }
         throw error;
       }
 
@@ -174,7 +190,7 @@ export const useApplications = () => {
     }
   };
 
-  const checkIfApplied = async (jobId: string): Promise<boolean> => {
+  const checkIfApplied = useCallback(async (jobId: string): Promise<boolean> => {
     if (!user) return false;
 
     try {
@@ -194,7 +210,7 @@ export const useApplications = () => {
       console.error('Error checking application status:', err);
       return false;
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (user) {

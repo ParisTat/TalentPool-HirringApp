@@ -5,7 +5,7 @@ import { Job } from '../types';
 import { useJobs } from '../hooks/useJobs';
 
 const JobsListPage: React.FC = () => {
-  const { jobs, isLoading } = useJobs();
+  const { jobs, isLoading, error } = useJobs();
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -58,6 +58,12 @@ const JobsListPage: React.FC = () => {
         </div>
       </div>
       
+      {error && (
+        <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+          <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+        </div>
+      )}
+      
       {isLoading ? (
         <div className="text-center py-12">
           <div className="text-slate-600 dark:text-slate-400">Loading jobs...</div>
@@ -67,7 +73,9 @@ const JobsListPage: React.FC = () => {
           {filteredJobs.length > 0 ? (
               filteredJobs.map(job => <JobCard key={job.id} job={job} />)
           ) : (
-              <p className="text-slate-500 dark:text-slate-400 md:col-span-2 lg:col-span-3 text-center">No jobs found matching your criteria.</p>
+              <p className="text-slate-500 dark:text-slate-400 md:col-span-2 lg:col-span-3 text-center">
+                {jobs.length === 0 ? 'No jobs available at the moment.' : 'No jobs found matching your criteria.'}
+              </p>
           )}
         </div>
       )}

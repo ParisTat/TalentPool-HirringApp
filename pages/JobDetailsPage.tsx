@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useJobs } from '../hooks/useJobs';
 import { useAuth } from '../auth/AuthContext';
@@ -14,45 +14,60 @@ const JobDetailsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasApplied, setHasApplied] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchJob = async () => {
-      if (!id) return;
-      
-      setIsLoading(true);
-      try {
-        const jobData = await getJobById(id);
+  // Memoize the job fetching function to prevent unnecessary re-renders
+  const fetchJob = useCallback(async () => {
+    if (!id) {
+      setError('No job ID provided');
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    try {
+      const jobData = await getJobById(id);
+      if (jobData) {
         setJob(jobData);
-      } catch (error) {
-        console.error('Error fetching job:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchJob();
-  }, [id, getJobById]);
-
-  useEffect(() => {
-    const checkApplicationStatus = async () => {
-      if (job && profile?.role === 'candidate') {
-        setIsChecking(true);
-        try {
-          const applied = await checkIfApplied(job.id);
-          setHasApplied(applied);
-        } catch (error) {
-          console.error('Error checking application status:', error);
-        } finally {
-          setIsChecking(false);
-        }
       } else {
+        setError('Job not found');
+      }
+    } catch (error) {
+      console.error('Error fetching job:', error);
+      setError('Failed to load job details');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]); // Remove getJobById from dependencies to prevent infinite loops
+
+  // Fetch job when component mounts or ID changes
+  useEffect(() => {
+    fetchJob();
+  }, [fetchJob]);
+
+  // Check application status when job and profile are available
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (!job || !profile || profile.role !== 'candidate') {
+        setIsChecking(false);
+        return;
+      }
+
+      setIsChecking(true);
+      try {
+        const applied = await checkIfApplied(job.id);
+        setHasApplied(applied);
+      } catch (error) {
+        console.error('Error checking application status:', error);
+      } finally {
         setIsChecking(false);
       }
     };
 
-    checkApplicationStatus();
-  }, [job, profile, checkIfApplied]);
+    checkStatus();
+  }, [job?.id, profile?.id, profile?.role]); // Remove checkIfApplied to prevent infinite loops
 
   const handleApply = async () => {
     if (!profile || profile.role !== 'candidate' || !job) {
@@ -63,14 +78,18 @@ const JobDetailsPage: React.FC = () => {
     try {
       await applyToJob(job.id);
       setHasApplied(true);
+      // Show success message
+      alert('Application submitted successfully!');
     } catch (error) {
       console.error('Error applying to job:', error);
-      alert('Failed to apply to job. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to apply to job. Please try again.';
+      alert(errorMessage);
     } finally {
       setIsApplying(false);
     }
   };
 
+  // Show loading only for job data, not application status
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -79,10 +98,12 @@ const JobDetailsPage: React.FC = () => {
     );
   }
 
-  if (!job) {
+  if (error || !job) {
     return (
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-red-600 dark:text-red-400">Job not found</h2>
+        <h2 className="text-2xl font-bold text-red-600 dark:text-red-400">
+          {error || 'Job not found'}
+        </h2>
         <Link to="/jobs" className="text-primary hover:underline mt-4 inline-block">
           &larr; Back to all jobs
         </Link>
@@ -104,9 +125,13 @@ const JobDetailsPage: React.FC = () => {
                 <h1 className="text-4xl font-extrabold text-secondary dark:text-slate-100">{job.title}</h1>
                 <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">{job.company} &bull; {job.location}</p>
             </div>
-            <div className="mt-4 md:mt-0">
-                {profile?.role === 'candidate' && !isChecking && (
-                  hasApplied ? (
+            <div className="mt-4 md:mt-0 min-w-[120px]">
+                {profile?.role === 'candidate' && (
+                  isChecking ? (
+                    <div className="px-8 py-3 text-lg font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 rounded-md w-full md:w-auto inline-block text-center">
+                      Checking...
+                    </div>
+                  ) : hasApplied ? (
                     <span className="px-8 py-3 text-lg font-medium text-green-600 bg-green-50 dark:bg-green-900/20 rounded-md w-full md:w-auto inline-block text-center">
                       Applied
                     </span>

@@ -11,10 +11,14 @@ const ApplicationsPage: React.FC = () => {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    if (profile?.role === 'recruiter') {
-      fetchApplicationsForRecruiter();
-    }
-  }, [profile, fetchApplicationsForRecruiter]);
+    const loadApplications = async () => {
+      if (profile?.role === 'recruiter') {
+        await fetchApplicationsForRecruiter();
+      }
+    };
+
+    loadApplications();
+  }, [profile?.id, profile?.role]); // Remove fetchApplicationsForRecruiter to prevent infinite loops
 
   const handleStatusUpdate = async (applicationId: string, newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected') => {
     setUpdatingStatus(applicationId);

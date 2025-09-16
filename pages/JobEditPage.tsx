@@ -33,7 +33,7 @@ const JobEditPage: React.FC = () => {
     };
 
     fetchJob();
-  }, [id, getJobById, navigate]);
+  }, [id]); // Remove getJobById and navigate from dependencies to prevent infinite loops
 
   const handleSubmit = async (jobData: any) => {
     if (!id) return;

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { useJobs } from '../hooks/useJobs';
+import { useAuth } from '../auth/AuthContext';
 
 const LandingPage: React.FC = () => {
-  const { jobs, isLoading } = useJobs();
+  const { jobs, isLoading, error } = useJobs();
+  const { user } = useAuth();
   const [featuredJobs, setFeaturedJobs] = useState<any[]>([]);
 
   useEffect(() => {
@@ -30,19 +32,31 @@ const LandingPage: React.FC = () => {
           >
             Browse Jobs
           </Link>
-          <Link
-            to="/login"
-            className="px-8 py-3 text-lg font-medium text-primary-dark dark:text-primary-light bg-cyan-100 dark:bg-cyan-900/20 rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/30 transition-transform hover:scale-105"
-          >
-            Sign In
-          </Link>
+          {!user && (
+            <Link
+              to="/login"
+              className="px-8 py-3 text-lg font-medium text-primary-dark dark:text-primary-light bg-cyan-100 dark:bg-cyan-900/20 rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/30 transition-transform hover:scale-105"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </section>
 
       {/* Featured Jobs Section */}
       <section className="mt-16">
         <h2 className="text-3xl font-bold text-center text-secondary dark:text-slate-100 mb-8">Featured Jobs</h2>
-        {isLoading ? (
+        {error ? (
+          <div className="text-center py-12">
+            <div className="text-red-600 dark:text-red-400 mb-4">Failed to load jobs</div>
+            <Link
+              to="/jobs"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+            >
+              Try Again
+            </Link>
+          </div>
+        ) : isLoading ? (
           <div className="text-center py-12">
             <div className="text-slate-600 dark:text-slate-400">Loading featured jobs...</div>
           </div>

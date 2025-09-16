@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ProfileEditForm from '../components/ProfileEditForm';
 import { useAuth } from '../auth/AuthContext';
@@ -10,11 +10,16 @@ const CandidateDashboardPage: React.FC = () => {
   const { applications, isLoading, fetchApplicationsForCandidate } = useApplications();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
+  // Load applications when component mounts and profile is available
   useEffect(() => {
-    if (profile?.role === 'candidate') {
-      fetchApplicationsForCandidate();
-    }
-  }, [profile, fetchApplicationsForCandidate]);
+    const loadApplications = async () => {
+      if (profile?.role === 'candidate') {
+        await fetchApplicationsForCandidate();
+      }
+    };
+
+    loadApplications();
+  }, [profile?.id, profile?.role]); // Remove fetchApplicationsForCandidate to prevent infinite loops
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -72,7 +77,7 @@ const CandidateDashboardPage: React.FC = () => {
       <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
         <h2 className="text-2xl font-bold text-secondary dark:text-slate-100 mb-4">Applied Jobs</h2>
         {isLoading ? (
-          <div className="text-center py-4">
+          <div className="text-center py-8">
             <div className="text-slate-600 dark:text-slate-400">Loading applications...</div>
           </div>
         ) : applications.length > 0 ? (
