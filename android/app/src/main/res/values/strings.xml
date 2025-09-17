@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">talentpool:-hiring-platform</string>
-    <string name="title_activity_main">talentpool:-hiring-platform</string>
+    <string name="app_name">TalentPool</string>
+    <string name="title_activity_main">TalentPool</string>
     <string name="package_name">com.paristat.talentpool</string>
     <string name="custom_url_scheme">com.paristat.talentpool</string>
 </resources>
