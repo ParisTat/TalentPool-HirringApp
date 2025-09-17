@@ -8,9 +8,18 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build && node supabase/functions/serve-site/copy-static.js && npx supabase functions deploy serve-site",
-    "copy-static": "node supabase/functions/serve-site/copy-static.js"
+    "copy-static": "node supabase/functions/serve-site/copy-static.js",
+    "mobile:build": "npm run build && npx cap sync",
+    "mobile:android": "npm run mobile:build && npx cap open android",
+    "mobile:ios": "npm run mobile:build && npx cap open ios",
+    "mobile:sync": "npx cap sync",
+    "mobile:run": "npm run mobile:build"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
     "@supabase/supabase-js": "^2.57.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
