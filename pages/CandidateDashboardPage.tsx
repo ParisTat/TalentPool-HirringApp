@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ProfileEditForm from '../components/ProfileEditForm';
+import { useCV } from '../hooks/useCV';
 import { useAuth } from '../auth/AuthContext';
 import { useApplications } from '../hooks/useApplications';
 
 const CandidateDashboardPage: React.FC = () => {
   const { profile } = useAuth();
   const { applications, isLoading, fetchApplicationsForCandidate } = useApplications();
+  const { cv, isLoading: cvLoading, error: cvError, fetchMyCV, uploadCV, deleteCV } = useCV();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   // Load applications when component mounts and profile is available
@@ -15,6 +17,7 @@ const CandidateDashboardPage: React.FC = () => {
     const loadApplications = async () => {
       if (profile?.role === 'candidate') {
         await fetchApplicationsForCandidate();
+        await fetchMyCV();
       }
     };
 
@@ -68,9 +71,39 @@ const CandidateDashboardPage: React.FC = () => {
       <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm mb-8">
         <h2 className="text-2xl font-bold text-secondary dark:text-slate-100 mb-4">Your CV/Resume</h2>
         <p className="text-slate-600 dark:text-slate-400 mb-4">Keep your CV updated to get noticed by recruiters.</p>
-        <button className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors">
-          Upload New CV
-        </button>
+
+        {cvError && (
+          <div className="mb-3 text-sm text-red-600 dark:text-red-400">{cvError}</div>
+        )}
+
+        {cvLoading ? (
+          <div className="text-slate-500 dark:text-slate-400">Loading CV...</div>
+        ) : cv ? (
+          <div className="space-y-3">
+            <div className="text-slate-600 dark:text-slate-400">
+              <span className="font-medium">Current:</span> {cv.filename}
+            </div>
+            <div className="flex items-center space-x-3">
+              <a href={cv.url} target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm font-medium text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors">View</a>
+              <button onClick={() => deleteCV()} className="px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">Delete</button>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Replace CV</label>
+              <input type="file" accept=".pdf,.doc,.docx" onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (file) await uploadCV(file);
+              }} />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload CV (PDF/DOC/DOCX)</label>
+            <input type="file" accept=".pdf,.doc,.docx" onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (file) await uploadCV(file);
+            }} />
+          </div>
+        )}
       </div>
       
       {/* Applied Jobs Section */}

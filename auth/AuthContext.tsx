@@ -200,6 +200,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(null);
         setUser(null);
         setProfile(null);
+        // Clear local caches/session
+        try {
+          localStorage.clear();
+          sessionStorage.clear();
+        } catch {}
         
         // Then sign out from Supabase
         const {error} = await supabase.auth.signOut();
@@ -216,6 +221,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(null);
         setUser(null);
         setProfile(null);
+        try {
+          localStorage.clear();
+          sessionStorage.clear();
+        } catch {}
         // Still redirect to homepage
         window.location.href = '/';
       }

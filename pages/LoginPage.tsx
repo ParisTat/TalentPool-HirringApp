@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import PasswordField from '../components/PasswordField';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,12 +17,16 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (password.length < 6) {
+      setError('Please enter the full password.');
+      return;
+    }
     setIsLoading(true);
 
     const { error } = await signIn(email, password);
 
     if (error) {
-      setError(error.message);
+      setError(error);
     } else {
       navigate('/');
     }
@@ -75,28 +80,13 @@ const LoginPage: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <PasswordField value={password} onChange={setPassword} minLength={6} disabled={isLoading} />
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || password.length < 6}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -45,6 +46,33 @@ const AppContent: React.FC = () => {
       document.body.classList.remove('capacitor-app', 'mobile-app');
     };
   }, [isMobile, isCapacitor]);
+
+  // Android back button handling
+  useEffect(() => {
+    if (!isCapacitor) return;
+    let listener: { remove: () => Promise<void> } | undefined;
+    (async () => {
+      listener = await CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      // Treat home route as exit, even if history exists
+      const isHome = location.hash === '#/' || location.hash === '' || location.hash === '#';
+      if (isHome) {
+        const shouldExit = confirm('Exit the app?');
+        if (shouldExit) CapacitorApp.exitApp();
+        return;
+      }
+
+      if (canGoBack || window.history.length > 1) {
+        window.history.back();
+      } else {
+        const shouldExit = confirm('Exit the app?');
+        if (shouldExit) CapacitorApp.exitApp();
+      }
+      });
+    })();
+    return () => {
+      if (listener) listener.remove();
+    };
+  }, [isCapacitor]);
 
   return (
     <HashRouter>

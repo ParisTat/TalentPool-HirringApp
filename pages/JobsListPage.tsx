@@ -1,11 +1,12 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
+import PullToRefresh from '../components/PullToRefresh';
 import JobCard from '../components/JobCard';
 import { Job } from '../types';
 import { useJobs } from '../hooks/useJobs';
 
 const JobsListPage: React.FC = () => {
-  const { jobs, isLoading, error } = useJobs();
+  const { jobs, isLoading, error, refreshJobs } = useJobs();
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -25,7 +26,11 @@ const JobsListPage: React.FC = () => {
 
 
   return (
+    <PullToRefresh onRefresh={refreshJobs}>
     <div>
+      <div className="flex justify-end mb-4">
+        <button onClick={refreshJobs} className="px-3 py-2 text-sm font-medium text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors">Refresh</button>
+      </div>
       <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm mb-8">
         <h1 className="text-3xl font-bold text-secondary dark:text-slate-100 mb-2">Find Your Perfect Job</h1>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
@@ -80,6 +85,7 @@ const JobsListPage: React.FC = () => {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 };
 

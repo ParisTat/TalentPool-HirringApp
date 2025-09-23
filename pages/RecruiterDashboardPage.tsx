@@ -30,18 +30,35 @@ const RecruiterDashboardPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-secondary dark:text-slate-100">Recruiter Dashboard</h1>
-        <div className="flex space-x-3">
+      <div className="mb-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-secondary dark:text-slate-100">Recruiter Dashboard</h1>
+          <div className="hidden sm:flex space-x-3">
+            <button 
+              onClick={() => navigate('/applications')}
+              className="px-4 py-2 font-medium text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
+            >
+              View Applications
+            </button>
+            <button 
+              onClick={() => navigate('/job-posting')}
+              className="px-6 py-2 font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+            >
+              Post a New Job
+            </button>
+          </div>
+        </div>
+        {/* Mobile stacked actions */}
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:hidden">
           <button 
             onClick={() => navigate('/applications')}
-            className="px-4 py-2 font-medium text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
+            className="w-full px-4 py-3 font-medium text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
           >
             View Applications
           </button>
           <button 
             onClick={() => navigate('/job-posting')}
-            className="px-6 py-2 font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+            className="w-full px-4 py-3 font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
           >
             Post a New Job
           </button>

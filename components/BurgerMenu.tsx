@@ -14,6 +14,18 @@ const BurgerMenu: React.FC = () => {
 
   const closeMenu = () => setIsOpen(false);
 
+  // Lock body scroll when menu is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, [isOpen]);
+
   const NavLinkItem: React.FC<{ to: string; children: React.ReactNode; onClick?: () => void }> = ({ 
     to, 
     children, 

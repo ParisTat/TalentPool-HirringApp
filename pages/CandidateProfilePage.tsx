@@ -17,12 +17,21 @@ interface CandidateProfile {
   education?: string;
 }
 
+interface CandidateCV {
+  id: string;
+  user_id: string;
+  filename: string;
+  url: string;
+  uploaded_at: string;
+}
+
 const CandidateProfilePage: React.FC = () => {
   const { candidateId } = useParams<{ candidateId: string }>();
   const navigate = useNavigate();
   const { profile } = useAuth();
   const [candidate, setCandidate] = useState<CandidateProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [candidateCV, setCandidateCV] = useState<CandidateCV | null>(null);
 
   useEffect(() => {
     const fetchCandidateProfile = async () => {
@@ -43,6 +52,19 @@ const CandidateProfilePage: React.FC = () => {
         }
 
         setCandidate(data);
+
+        // Fetch candidate CV (requires policy to allow recruiter select)
+        const { data: cv, error: cvErr } = await supabase
+          .from('candidate_cvs')
+          .select('*')
+          .eq('user_id', candidateId)
+          .maybeSingle();
+        if (!cvErr) {
+          setCandidateCV(cv ?? null);
+        } else {
+          // keep page functional even if CV not accessible
+          setCandidateCV(null);
+        }
       } catch (error) {
         console.error('Error fetching candidate profile:', error);
         navigate('/applications');
@@ -174,6 +196,26 @@ const CandidateProfilePage: React.FC = () => {
             <h2 className="text-xl font-bold text-secondary dark:text-slate-100 mb-4">Education</h2>
             <div className="prose prose-sm max-w-none dark:prose-invert">
               <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{candidate.education}</p>
+            </div>
+          </div>
+        )}
+        {/* CV Download (visible to recruiters) */}
+        {candidateCV && (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+            <h2 className="text-xl font-bold text-secondary dark:text-slate-100 mb-4">CV / Resume</h2>
+            <div className="flex items-center justify-between">
+              <div className="text-slate-600 dark:text-slate-400">
+                {candidateCV.filename}
+              </div>
+              <a
+                href={candidateCV.url}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors"
+              >
+                Download
+              </a>
             </div>
           </div>
         )}

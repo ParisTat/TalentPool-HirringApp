@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PullToRefresh from '../components/PullToRefresh';
 import { useNavigate } from 'react-router-dom';
 import { useApplications, Application } from '../hooks/useApplications';
 import { useAuth } from '../auth/AuthContext';
@@ -75,6 +76,7 @@ const ApplicationsPage: React.FC = () => {
   }
 
   return (
+    <PullToRefresh onRefresh={fetchApplicationsForRecruiter}>
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="flex justify-between items-center">
@@ -223,6 +225,7 @@ const ApplicationsPage: React.FC = () => {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 };
 

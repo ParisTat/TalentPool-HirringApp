@@ -149,6 +149,12 @@ body {
   backdrop-filter: blur(8px);
 }
 
+/* Prevent background scroll when overlays/menus are open */
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
