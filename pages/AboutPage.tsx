@@ -22,6 +22,14 @@ const AboutPage: React.FC = () => {
           Thank you for being part of our community. Together, let's build the future of work.
         </p>
       </div>
+      
+      {/* Developer Watermark - Only visible in production builds */}
+      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+        <div className="text-sm text-slate-500 dark:text-slate-500 text-center">
+          <p>© 2025 Paristat — TalentPool</p>
+          <p className="mt-1">Professional Hiring Platform</p>
+        </div>
+      </div>
     </div>
   );
 };
