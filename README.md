@@ -1,3 +1,14 @@
+<div align="center">
+  <img src="public/android-chrome-192x192.png" alt="TalentPool Logo" width="120" height="120">
+  <h1>TalentPool</h1>
+  <h3>Professional Hiring Platform</h3>
+  <p><em>Connecting talent with opportunity</em></p>
+  <br>
+  <p><strong>© 2025 Paristat — TalentPool</strong></p>
+</div>
+
+---
+
 # TalentPool - Hiring Platform
 
 A modern, full-stack hiring platform built with React, TypeScript, and Supabase. TalentPool connects talented professionals with innovative companies, providing a seamless experience for both job seekers and recruiters.
